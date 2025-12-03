@@ -137,14 +137,15 @@ namespace esphome
 
         float Optimizer::enforce_step_down(float actual_flow_temp, float calculated_flow) 
         {
-            const float MAX_FEED_STEP_DOWN = 1.0f;
-            const float MAX_FEED_STEP_DOWN_ADJUSTMENT = 0.5f;
+            const float MAX_FEED_STEP_DOWN = 1.5f;
+            const float MAX_FEED_STEP_DOWN_ADJUSTMENT = 1.5f;
             if ((actual_flow_temp - calculated_flow) > MAX_FEED_STEP_DOWN)
             {
                 ESP_LOGW(OPTIMIZER_TAG, "Flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C below actual feed temp)",
-                        actual_flow_temp - MAX_FEED_STEP_DOWN_ADJUSTMENT, calculated_flow, (actual_flow_temp - calculated_flow));
+                        actual_flow_temp - MAX_FEED_STEP_DOWN_ADJUSTMENT + 0.2f, calculated_flow, (actual_flow_temp - calculated_flow));
 
-                return actual_flow_temp - MAX_FEED_STEP_DOWN_ADJUSTMENT;
+                // Add 0.2 to avoid triggrering compressor halt on 2C Delta when feed temp rises 0.5C after adjustment.
+                return actual_flow_temp - MAX_FEED_STEP_DOWN_ADJUSTMENT + 0.2f;
             }
             return calculated_flow;
         }
@@ -198,7 +199,7 @@ namespace esphome
                 }
             }
         }
-        
+
         void Optimizer::on_operation_mode_change(uint8_t new_mode, uint8_t previous_mode)
         {
             if (new_mode == previous_mode) 

@@ -213,14 +213,16 @@ namespace esphome
                             ESP_LOGD(OPTIMIZER_TAG, "Z%d HEATING (boost adjustment): boost: %.1f°C, calcluated_flow: %.2f°C, actual_flow: %.2f°C",
                                      (i + 1), short_cycle_prevention_adjustment, calculated_flow, actual_flow_temp);
 
-                            if ((actual_flow_temp - calculated_flow) >= 1.0f)
+                            if ((actual_flow_temp - calculated_flow) >= 1.5f)
                             {
+                                short_cycle_prevention_adjustment = actual_flow_temp - calculated_flow - 1.3f; // Add 0.2 to avoid triggrering compressor halt on 2C Delta when feed temp rises 0.5C after adjustment.
                                 calculated_flow += short_cycle_prevention_adjustment;
+                                this->predictive_short_cycle_total_adjusted_ = short_cycle_prevention_adjustment;
                             }
                             else
                             {
                                 this->predictive_short_cycle_total_adjusted_ = 0.0f;
-                                short_cycle_prevention_adjustment = 0;
+                                short_cycle_prevention_adjustment = 0.0f;
                             }
                         }
                         ESP_LOGD(OPTIMIZER_TAG, "Z%d HEATING (Delta T): calculated_flow: %.2f°C (boost: %.1f)",
