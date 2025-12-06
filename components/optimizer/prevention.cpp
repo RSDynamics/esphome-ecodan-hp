@@ -98,7 +98,8 @@ namespace esphome
 
             if (delta >= predictive_short_cycle_high_delta_threshold)
             {
-                float adjustment_factor = delta - predictive_short_cycle_high_delta_threshold + 0.2f; // Add 0.2 to avoid triggrering compressor halt on 2C Delta when feed temp rises 0.5C after adjustment.
+                // Add 0.2 to avoid triggrering compressor halt on 2C Delta when feed temp rises 0.5C after adjustment.
+                float adjustment_factor = delta - predictive_short_cycle_high_delta_threshold + 0.2f;
 
                 if (this->predictive_delta_start_time_ == 0)
                 {
@@ -120,14 +121,14 @@ namespace esphome
                             {
 
                                 float adjusted_flow_z1 = status.Zone1FlowTemperatureSetPoint + adjustment_factor;
-                                ESP_LOGD(OPTIMIZER_CYCLE_TAG, "(Delta T) CMD: Increase Z1 Heat Flow to -> %.1f°C", adjusted_flow_z1);
+                                ESP_LOGD(OPTIMIZER_CYCLE_TAG, "(Delta T) CMD: Increase Z1 Heat Flow to -> %.1f°C Boost: %.1f°C", adjusted_flow_z1, adjustment_factor);
                                 this->state_.ecodan_instance->set_flow_target_temperature(adjusted_flow_z1, esphome::ecodan::Zone::ZONE_1);
                                 was_boosted = true;
                             }
                             if (status.is_auto_adaptive_heating(esphome::ecodan::Zone::ZONE_2) && (!status.has_independent_z2() || (status.has_independent_z2() && (multizone_status == 1 || multizone_status == 3))))
                             {
                                 float adjusted_flow_z2 = status.Zone2FlowTemperatureSetPoint + adjustment_factor;
-                                ESP_LOGD(OPTIMIZER_CYCLE_TAG, "(Delta T) CMD: Increase Z2 Heat Flow to -> %.1f°C", adjusted_flow_z2);
+                                ESP_LOGD(OPTIMIZER_CYCLE_TAG, "(Delta T) CMD: Increase Z2 Heat Flow to -> %.1f°C Boost: %.1f°C", adjusted_flow_z2, adjustment_factor);
                                 this->state_.ecodan_instance->set_flow_target_temperature(adjusted_flow_z2, esphome::ecodan::Zone::ZONE_2);
                                 was_boosted = true;
                             }
@@ -139,13 +140,13 @@ namespace esphome
                             this->predictive_short_cycle_total_adjusted_ = adjustment_factor;
 
                             float adjusted_flow_z1 = status.Zone1FlowTemperatureSetPoint + adjustment_factor;
-                            ESP_LOGD(OPTIMIZER_CYCLE_TAG, "CMD: Increase Z1 Heat Flow to -> %.1f°C", adjusted_flow_z1);
+                            ESP_LOGD(OPTIMIZER_CYCLE_TAG, "CMD: Increase Z1 Heat Flow to -> %.1f°C Boost: %.1f°C", adjusted_flow_z1, adjustment_factor);
                             this->state_.ecodan_instance->set_flow_target_temperature(adjusted_flow_z1, esphome::ecodan::Zone::ZONE_1);
 
                             if (status.has_independent_z2())
                             {
                                 float adjusted_flow_z2 = status.Zone2FlowTemperatureSetPoint + adjustment_factor;
-                                ESP_LOGD(OPTIMIZER_CYCLE_TAG, "CMD: Increase Z2 Heat Flow to -> %.1f°C", adjusted_flow_z2);
+                                ESP_LOGD(OPTIMIZER_CYCLE_TAG, "CMD: Increase Z2 Heat Flow to -> %.1f°C Boost: %.1f°C", adjusted_flow_z2, adjustment_factor);
                                 this->state_.ecodan_instance->set_flow_target_temperature(adjusted_flow_z2, esphome::ecodan::Zone::ZONE_2);
                             }
                         }
