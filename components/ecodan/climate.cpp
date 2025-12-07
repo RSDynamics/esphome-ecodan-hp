@@ -204,7 +204,7 @@ namespace ecodan
             //ESP_LOGE(TAG, "min: %f, max: %f", traits.get_visual_min_temperature(), traits.get_visual_max_temperature());
         }
         
-        traits.set_visual_target_temperature_step(this->dhw_climate_mode ? 0.5 : 0.1);
+        traits.set_visual_target_temperature_step(this->dhw_climate_mode || this->thermostat_climate_mode ? 0.5 : 0.1);
         traits.set_visual_current_temperature_step(this->dhw_climate_mode ? 0.5 : 0.1);
 
         return traits;
