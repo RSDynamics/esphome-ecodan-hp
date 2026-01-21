@@ -137,8 +137,8 @@ namespace esphome
 
         float Optimizer::enforce_step_down(const ecodan::Status &status, float actual_flow_temp, float calculated_flow) 
         {
-            const float MAX_FEED_STEP_DOWN = 1.0f;
-            const float MAX_FEED_STEP_DOWN_ADJUSTMENT = 0.5f;
+            const float MAX_FEED_STEP_DOWN = 1.4f;
+            const float MAX_FEED_STEP_DOWN_ADJUSTMENT = 1.3f;
             if (status.has_independent_zone_temps()) {
                 ESP_LOGD(OPTIMIZER_TAG, "Skipping enforce step down for independent zone temp systems");
             }

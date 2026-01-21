@@ -322,7 +322,7 @@ namespace esphome
                             ESP_LOGD(OPTIMIZER_TAG, "Z%d HEATING (boost adjustment): boost: %.1f°C, calcluated_flow: %.2f°C, actual_flow: %.2f°C",
                                      (i + 1), short_cycle_prevention_adjustment, calculated_flow, actual_flow_temp);
 
-                            if ((actual_flow_temp - calculated_flow) >= 1.0f)
+                            if ((actual_flow_temp - calculated_flow) >= 1.4f)
                             {
                                 calculated_flow += short_cycle_prevention_adjustment;
                             }

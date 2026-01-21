@@ -43,7 +43,7 @@ namespace esphome
 
             // Check if day changed (e.g. 303 -> 304)
             if (current_day != this->last_processed_day_) {
-                ESP_LOGI(OPTIMIZER_TAG, "Learning: Day transition detected (%d -> %d). Processing model...", 
+                ESP_LOGW(OPTIMIZER_TAG, "Learning: Day transition detected (%d -> %d). Processing model...", 
                          this->last_processed_day_, current_day);
                 
                 this->update_learning_model(this->last_processed_day_);
@@ -80,7 +80,7 @@ namespace esphome
             float heat_produced_kwh = this->last_total_heating_produced_;
             float elec_consumed_kwh = this->last_total_heating_consumed_;
 
-            ESP_LOGI(OPTIMIZER_TAG, "Learning Stats: AvgTemp=%.1fC, Heat=%.1fkWh, Elec=%.1fkWh, Run=%.1fh",
+            ESP_LOGW(OPTIMIZER_TAG, "Learning Stats: AvgTemp=%.1fC, Heat=%.1fkWh, Elec=%.1fkWh, Run=%.1fh",
                      avg_temp_day, heat_produced_kwh, elec_consumed_kwh, runtime_hours);
             
             // Only learn if significant heating occurred (> 5 kWh produced, > 2 hours run)
@@ -130,7 +130,7 @@ namespace esphome
             update_ema(this->state_.learned_thermal_output_global, observed_thermal_output, ALPHA_HW);
             update_ema(this->state_.learned_elec_power_global, observed_elec_power, ALPHA_HW);
 
-            ESP_LOGI(OPTIMIZER_TAG, "Learning Updated: HeatLoss=%.3f (kW/K), BaseCOP=%.2f, Output=%.1f kW, Power=%.1f kW",
+            ESP_LOGW(OPTIMIZER_TAG, "Learning Updated: HeatLoss=%.3f (kW/K), BaseCOP=%.2f, Output=%.1f kW, Power=%.1f kW",
                      this->state_.learned_heat_loss_global,
                      this->state_.learned_base_cop_global,
                      this->state_.learned_thermal_output_global,
