@@ -363,3 +363,35 @@ interval:
       - lambda: id(optimizer_ptr)->predictive_short_cycle_check();
       - lambda: id(optimizer_ptr)->update_boost_sensor();
       - lambda: id(optimizer_ptr)->update_heat_model();
+
+sensor:
+  - platform: template
+    name: "Learned Heat Loss"
+    id: learned_heat_loss
+    unit_of_measurement: "kW/K"
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_heat_loss);
+
+  - platform: template
+    name: "Learned Base COP"
+    id: learned_base_cop
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_base_cop);
+
+  - platform: template
+    name: "Learned Thermal Output"
+    id: learned_thermal_output
+    unit_of_measurement: "kW"
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_thermal_output);
+
+  - platform: template
+    name: "Learned Elec Power"
+    id: learned_elec_power
+    unit_of_measurement: "kW"
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_elec_power);
