@@ -22,7 +22,7 @@ blueprint:
       selector:
         entity:
           domain: number
-          device_class: temperature
+          # device_class: temperature
 
 variables:
   source: !input source_entity
@@ -48,5 +48,6 @@ action:
       entity_id: !input target_input
     data:
       value: "{{ current_temp }}"
+  - delay: "00:01:00"
 
 mode: single
