@@ -67,8 +67,8 @@ namespace esphome
                     }
                 }
                 else {
-                    // also add 0.5 during post dhw while heating
-                    adjusted_flow += 0.5f;
+                    // Drop Flowtemp Setpoint as fast as possible without stopping the compressor
+                    adjusted_flow -= 1.3f;
                 }
             }   
             else {
