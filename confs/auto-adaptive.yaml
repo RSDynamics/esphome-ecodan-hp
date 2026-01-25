@@ -324,6 +324,49 @@ binary_sensor:
       id: status_short_cycle_lockout
       name: ${status_short_cycle_lockout}
 
+sensor:
+  - platform: template
+    name: "Learned Heat Loss"
+    id: learned_heat_loss
+    unit_of_measurement: "kW/K"
+    state_class: measurement
+    accuracy_decimals: 3
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_heat_loss);
+
+  - platform: template
+    name: "Learned Base COP"
+    id: learned_base_cop
+    unit_of_measurement: ""
+    state_class: measurement
+    accuracy_decimals: 2
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_base_cop);
+
+  - platform: template
+    name: "Learned Thermal Output"
+    id: learned_thermal_output
+    unit_of_measurement: "kW"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_thermal_output);
+
+  - platform: template
+    name: "Learned Elec Power"
+    id: learned_elec_power
+    unit_of_measurement: "kW"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    update_interval: 60s
+    lambda: |-
+      return id(g_learned_elec_power);
+
 button:
   - platform: template
     id: short_cycle_mitigation_button
@@ -363,35 +406,3 @@ interval:
       - lambda: id(optimizer_ptr)->predictive_short_cycle_check();
       - lambda: id(optimizer_ptr)->update_boost_sensor();
       - lambda: id(optimizer_ptr)->update_heat_model();
-
-sensor:
-  - platform: template
-    name: "Learned Heat Loss"
-    id: learned_heat_loss
-    unit_of_measurement: "kW/K"
-    update_interval: 60s
-    lambda: |-
-      return id(g_learned_heat_loss);
-
-  - platform: template
-    name: "Learned Base COP"
-    id: learned_base_cop
-    update_interval: 60s
-    lambda: |-
-      return id(g_learned_base_cop);
-
-  - platform: template
-    name: "Learned Thermal Output"
-    id: learned_thermal_output
-    unit_of_measurement: "kW"
-    update_interval: 60s
-    lambda: |-
-      return id(g_learned_thermal_output);
-
-  - platform: template
-    name: "Learned Elec Power"
-    id: learned_elec_power
-    unit_of_measurement: "kW"
-    update_interval: 60s
-    lambda: |-
-      return id(g_learned_elec_power);
