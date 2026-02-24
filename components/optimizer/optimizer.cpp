@@ -285,7 +285,8 @@ namespace esphome
                     else
                     {
                         calculated_flow = actual_return_temp + target_delta_t;
-                        if (error < 0.0f) {
+                        // return to base delta t if we are at or above target temp to optimise efficiency.
+                        if (error <= 0.0f) {
                             calculated_flow = actual_return_temp + base_min_delta_t;
                             ESP_LOGD(OPTIMIZER_TAG, "Z%d Setpoint reached (Error %.1f). Reverting to Base Delta T (%.1f).", 
                                 (i+1), error, base_min_delta_t);
@@ -301,7 +302,7 @@ namespace esphome
                             ESP_LOGD(OPTIMIZER_TAG, "Z%d HEATING (boost adjustment): boost: %.1f°C, calcluated_flow: %.2f°C, actual_flow: %.2f°C",
                                      (i + 1), mapped_pcp_adjustment_, calculated_flow, actual_flow_temp);
 
-                            if ((actual_flow_temp - calculated_flow) >= 1.0f)
+                            if ((actual_flow_temp - calculated_flow) >= 1.4f)
                             {
                                 calculated_flow += mapped_pcp_adjustment_;
                             }

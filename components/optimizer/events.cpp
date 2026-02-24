@@ -8,7 +8,7 @@ namespace esphome
     namespace optimizer
     {
         using namespace esphome::ecodan;
-        // callbacks to monitor step down, need to keep within 1.0C else compressor will halt
+        // callbacks to monitor step down, need to keep within 2.0C else compressor will halt
         void Optimizer::on_feed_temp_change(float actual_flow_temp, OptimizerZone zone) {            
             if (std::isnan(actual_flow_temp) 
                 || this->state_.status_short_cycle_lockout->state
@@ -41,8 +41,8 @@ namespace esphome
                 if (status.DhwFlowTemperatureSetPoint > actual_flow_temp)
                     return;
 
-                // adjust during first part of heating
-                adjusted_flow += 0.5f;
+                // ALways keep the flow temp far below the feed temp so the compressor spins down faster after dhw.
+                adjusted_flow -= 1.5f;
                 // Each time we adjust for dhw, set the post dhw timer expiration
                 time_t current_timestamp = status.timestamp();
                 if (status.CompressorOn && current_timestamp > 0) {
@@ -55,26 +55,26 @@ namespace esphome
                 if (!this->is_heating_active(status)) {
                     // no demand, restore saved setpoint
                     float restore_val = (zone == OptimizerZone::ZONE_2) ? this->dhw_old_z2_setpoint_ : this->dhw_old_z1_setpoint_;
-                    
+
                     if (!std::isnan(restore_val)) {
                         adjusted_flow = restore_val;
-                        
+
                         // Also stop timer
-                        this->dhw_post_run_expiration_ = 0; 
+                        this->dhw_post_run_expiration_ = 0;
                         this->dhw_old_z1_setpoint_ = NAN;
                         this->dhw_old_z2_setpoint_ = NAN;
                         ESP_LOGD(OPTIMIZER_TAG, "Post-DHW: Heat demand gone. Restoring original setpoint %.1f and clearing timer.", adjusted_flow);
                     }
                 }
                 else {
-                    // also add 0.5 during post dhw while heating
-                    adjusted_flow += 0.5f;
+                    // Drop Flowtemp Setpoint as fast as possible without stopping the compressor
+                    adjusted_flow -= 2.0f;
                 }
-            }   
+            }
             else {
                 adjusted_flow = enforce_step_down(status, actual_flow_temp, current_flow_setpoint);
             }
-    
+
             if (adjusted_flow != current_flow_setpoint)
             {
                 set_flow_temp(adjusted_flow, zone);
@@ -83,7 +83,7 @@ namespace esphome
 
         bool Optimizer::set_flow_temp(float flow, OptimizerZone zone) {
             auto &status = this->state_.ecodan_instance->get_status();
-            
+
             if (status.has_independent_zone_temps())
             {
                 if (zone == OptimizerZone::ZONE_1) {
@@ -137,9 +137,9 @@ namespace esphome
 
         float Optimizer::enforce_step_down(const ecodan::Status &status, float actual_flow_temp, float calculated_flow) 
         {
-            const float MAX_FEED_STEP_DOWN = 1.0f;
-            const float MAX_FEED_STEP_DOWN_ADJUSTMENT = 0.5f;
-            
+            const float MAX_FEED_STEP_DOWN = 1.4f;
+            const float MAX_FEED_STEP_DOWN_ADJUSTMENT = 1.4f;
+
             if ((actual_flow_temp - calculated_flow) > MAX_FEED_STEP_DOWN)
             {
                 ESP_LOGW(OPTIMIZER_TAG, "Flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C below actual feed temp)",
