@@ -170,8 +170,8 @@ namespace esphome
 
         float Optimizer::enforce_step_limit(const ecodan::Status &status, float actual_flow_temp, float calculated_flow) 
         {
-            const float MAX_FEED_STEP_CHANGE = 1.0f;
-            const float MAX_FEED_STEP_ADJUSTMENT = 0.5f;
+            const float MAX_FEED_STEP_CHANGE = 1.4f;
+            const float MAX_FEED_STEP_ADJUSTMENT = 1.3f;
             
             bool is_cooling = this->is_cooling_active(status);
 
