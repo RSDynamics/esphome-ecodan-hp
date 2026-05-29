@@ -145,7 +145,7 @@ namespace esphome
             }
             return false;
         }
-        
+
         void Optimizer::on_compressor_stop()
         {
             auto &status = this->state_.ecodan_instance->get_status();
