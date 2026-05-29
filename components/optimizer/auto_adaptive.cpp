@@ -252,7 +252,7 @@ namespace esphome
                 calculated_flow = this->round_nearest(calculated_flow);
 
                 if (pcp_adj > 0.0f) {
-                    if ((actual_flow_temp - calculated_flow) >= 1.0f) {
+                    if ((actual_flow_temp - calculated_flow) >= 1.4f) {
                         calculated_flow += pcp_adj;
                     } else {
                         pcp_adj = 0.0f;
@@ -393,7 +393,7 @@ namespace esphome
             float smart_boost     = is_heating_mode ? this->calculate_smart_boost(heating_type_index, error) : 1.0f;
             float dynamic_min     = prof.base_min_delta_t + cold_factor * (prof.min_delta_cold_limit - prof.base_min_delta_t);
 
-            bool set_point_reached = error < 0.0f;
+            bool set_point_reached = error <= 0.0f;
             bool solver_enabled = this->solver_enabled();
 
             if (solver_enabled) {
