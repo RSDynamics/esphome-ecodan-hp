@@ -79,7 +79,7 @@ namespace esphome
                 }
                 else {
                     // Drop Flowtemp Setpoint as fast as possible without stopping the compressor
-                    adjusted_flow -= 2.0f;
+                    adjusted_flow -= 1.8f;
                 }
             }   
             else {
