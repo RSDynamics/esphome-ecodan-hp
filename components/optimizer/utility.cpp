@@ -173,7 +173,7 @@ namespace esphome
             const float MAX_FEED_STEP_CHANGE_HEAT = 1.4f;
             const float MAX_FEED_STEP_CHANGE_COOL = 1.4f;
             const float MAX_FEED_STEP_ADJUSTMENT_HEAT = 1.3f;
-            const float MAX_FEED_STEP_ADJUSTMENT_COOL = 1.3f;
+            const float MAX_FEED_STEP_ADJUSTMENT_COOL = 1.1f;
 
             bool is_cooling = this->is_cooling_active(status);
 
