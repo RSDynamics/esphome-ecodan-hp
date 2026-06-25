@@ -170,16 +170,18 @@ namespace esphome
 
         float Optimizer::enforce_step_limit(const ecodan::Status &status, float actual_flow_temp, float calculated_flow) 
         {
-            const float MAX_FEED_STEP_CHANGE = 1.4f;
-            const float MAX_FEED_STEP_ADJUSTMENT = 1.3f;
-            
+            const float MAX_FEED_STEP_CHANGE_HEAT = 1.4f;
+            const float MAX_FEED_STEP_CHANGE_COOL = 0.9f;
+            const float MAX_FEED_STEP_ADJUSTMENT_HEAT = 1.3f;
+            const float MAX_FEED_STEP_ADJUSTMENT_COOL = 0.8f;
+
             bool is_cooling = this->is_cooling_active(status);
 
             if (is_cooling) 
             {
-                if ((calculated_flow - actual_flow_temp) > MAX_FEED_STEP_CHANGE)
+                if ((calculated_flow - actual_flow_temp) > MAX_FEED_STEP_CHANGE_COOL)
                 {
-                    float adjusted_target = actual_flow_temp + MAX_FEED_STEP_ADJUSTMENT;
+                    float adjusted_target = actual_flow_temp + MAX_FEED_STEP_ADJUSTMENT_COOL;
                     
                     ESP_LOGW(OPTIMIZER_TAG, "Cooling flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C above actual feed temp)",
                             adjusted_target, calculated_flow, (calculated_flow - actual_flow_temp));
@@ -189,9 +191,9 @@ namespace esphome
             }
             else 
             {
-                if ((actual_flow_temp - calculated_flow) > MAX_FEED_STEP_CHANGE)
+                if ((actual_flow_temp - calculated_flow) > MAX_FEED_STEP_CHANGE_HEAT)
                 {
-                    float adjusted_target = actual_flow_temp - MAX_FEED_STEP_ADJUSTMENT;
+                    float adjusted_target = actual_flow_temp - MAX_FEED_STEP_ADJUSTMENT_HEAT;
                     
                     ESP_LOGW(OPTIMIZER_TAG, "Heating/DHW flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C below actual feed temp)",
                             adjusted_target, calculated_flow, (actual_flow_temp - calculated_flow));
