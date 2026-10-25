@@ -50,7 +50,7 @@ namespace esphome
             bool boosting = (step_limited != live_setpoint);
 
             // One protective adjustment moves the flow setpoint at most 0.5°C.
-            const float MAX_BOOST_STEP = 0.5f;
+            const float MAX_BOOST_STEP = 100.0f;  // customization: cap effectively off, full step-limit correction on every feed update
             step_limited = is_cooling
                 ? std::max(step_limited, live_setpoint - MAX_BOOST_STEP)
                 : std::min(step_limited, live_setpoint + MAX_BOOST_STEP);

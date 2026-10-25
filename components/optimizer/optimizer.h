@@ -64,8 +64,10 @@ namespace esphome
         return status.has_cooling() && status.is_auto_adaptive_cooling(ecodan_zone);
       }
 
-      const float MAX_FEED_STEP_CHANGE = 1.0f;
-      const float MAX_FEED_STEP_ADJUSTMENT = 1.0f;
+      const float MAX_FEED_STEP_CHANGE_HEAT = 1.4f;
+      const float MAX_FEED_STEP_CHANGE_COOL = 1.4f;
+      const float MAX_FEED_STEP_ADJUSTMENT_HEAT = 1.3f;
+      const float MAX_FEED_STEP_ADJUSTMENT_COOL = 1.1f;
 
       uint32_t compressor_start_time_ = 0;
       uint32_t last_defrost_time_     = 0;

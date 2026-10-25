@@ -70,7 +70,9 @@ namespace esphome
                     (status.DhwFlowTemperatureSetPoint - actual_flow_temp) > 1.0f)
                     return;
 
-                adjusted_flow += 0.5f;
+                // Stay just below the feed during DHW: inside the 1 C hysteresis band, and a stale
+                // command (feed +0.5 per step) still leaves a gap well under the 2 C compressor stop.
+                adjusted_flow -= 0.5f;
             }
             else if (post_dhw_window) {
                 const esphome::ecodan::Zone ez = (zone == OptimizerZone::ZONE_2)
@@ -108,11 +110,14 @@ namespace esphome
                 }
                 else if (status.is_heating_active())
                 {
-                    // Trail only the DHW -> heating handover
-                    if (fabs(actual_flow_temp - current_flow_setpoint) < 1.0f)
-                        return;   // no stop risk: leave the setpoint alone
+                    // DHW -> heating handover: trail the (falling) feed with the same offset as the
+                    // step limiter, so the compressor throttles back instead of holding a high frequency.
+                    // gap > 0: setpoint below feed, gap < 0: setpoint above feed (feed collapsing).
+                    float gap = actual_flow_temp - current_flow_setpoint;
+                    if (gap >= 1.0f && gap < MAX_FEED_STEP_CHANGE_HEAT)
+                        return;   // already in the throttle band and below the stop threshold
 
-                    float adjusted_target = actual_flow_temp - 0.5f;
+                    float adjusted_target = actual_flow_temp - MAX_FEED_STEP_ADJUSTMENT_HEAT;
 
                     ESP_LOGW(OPTIMIZER_TAG, "Heating/DHW flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C below actual feed temp)",
                             adjusted_target, current_flow_setpoint, (actual_flow_temp - current_flow_setpoint));

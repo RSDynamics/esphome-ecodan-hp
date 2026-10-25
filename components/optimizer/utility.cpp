@@ -247,9 +247,9 @@ namespace esphome
             // already a stop risk, and both readings sit on the 0.1 °C grid.
             if (is_cooling_mode) 
             {
-                if ((calculated_flow - actual_flow_temp) >= MAX_FEED_STEP_CHANGE)
+                if ((calculated_flow - actual_flow_temp) >= MAX_FEED_STEP_CHANGE_COOL)
                 {
-                    float adjusted_target = actual_flow_temp + MAX_FEED_STEP_ADJUSTMENT;
+                    float adjusted_target = actual_flow_temp + MAX_FEED_STEP_ADJUSTMENT_COOL;
                     
                     ESP_LOGW(OPTIMIZER_TAG, "Cooling flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C above actual feed temp)",
                             adjusted_target, calculated_flow, (calculated_flow - actual_flow_temp));
@@ -259,9 +259,9 @@ namespace esphome
             }
             else 
             {
-                if ((actual_flow_temp - calculated_flow) >= MAX_FEED_STEP_CHANGE)
+                if ((actual_flow_temp - calculated_flow) >= MAX_FEED_STEP_CHANGE_HEAT)
                 {
-                    float adjusted_target = actual_flow_temp - MAX_FEED_STEP_ADJUSTMENT;
+                    float adjusted_target = actual_flow_temp - MAX_FEED_STEP_ADJUSTMENT_HEAT;
                     
                     ESP_LOGW(OPTIMIZER_TAG, "Heating/DHW flow adjust: %.2f°C to prevent compressor stop! (setpoint: %.2f°C is %.2f°C below actual feed temp)",
                             adjusted_target, calculated_flow, (actual_flow_temp - calculated_flow));
